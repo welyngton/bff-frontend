@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { MatTableModule } from '@angular/material/table'; 
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -7,7 +8,12 @@ import { MatTableModule } from '@angular/material/table';
   styleUrls: ['./app.component.sass']
 })
 export class AppComponent {
+
   title = 'bff-frontend2';
+  dataSet = [];
+  dataSet1 = [];
+  dataSet2 = [];
+  jsonURLMock = "../assets/employees.json";
 
   ELEMENT_DATA: any[] = [
     {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
@@ -21,7 +27,58 @@ export class AppComponent {
     {position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F'},
     {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'},
   ];
-  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
+  displayedColumns1: string[] = ['position', 'name', 'weight', 'symbol'];
+  displayedColumns: string[] = ['position', 'name'];
 
 
+  constructor(private http: HttpClient) {
+
+    this.http.get(this.jsonURLMock).subscribe((data: any) => {
+      console.log('json lido');
+      this.dataSet1 = data;
+      console.log('json atribuido');
+      
+      this.dataSet = this.dataSet1
+      // .slice(0,10)
+      .map(employee => {
+        
+        delete employee.name;
+        delete employee.telephone;
+        delete employee.address;
+        delete employee.position;
+        delete employee.absences;
+
+        employee['name'] = this.getNameByEmployeeNumber(employee)
+        return employee;
+     });
+    });
+
+    // this.http.get(this.jsonURLMock).subscribe((data: any) => {
+    //   this.dataSet2 = data;
+    // });
+
+
+  }
+
+
+  ngOnInit() {
+    console.log('oi on init');
+
+
+  }
+
+  getNameByEmployeeNumber(employee) {
+
+    // let retorno = this.dataSet1.find(e => {
+    //   console.log('e: ', employee, ' | ', ' employee: ', e);
+    //   return (e.employee_number == employee.employee_number)
+    // });
+
+    let retorno = { 
+      "last": "Eduardo",
+      "first": "Mason",
+      "middle": "Armin"
+    };
+    return retorno;
+  }
 }
